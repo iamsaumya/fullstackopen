@@ -4,38 +4,59 @@ import ReactDOM from 'react-dom'
 
 const Header = ({course}) => {
   return (
-    <h1>{course}</h1>
+    <h1>{course.name}</h1>
   )
 }
 
-const Content = ({parts, exercises}) => {
+const Content = ({course}) => {
+  let parts = course["parts"]
+  const [part1,part2,part3] = parts
+
   return (
     <React.Fragment>
-    <Part part={parts[0]} exercise={exercises[0]}/>
-    <Part part={parts[1]} exercise={exercises[1]}/>
-    <Part part={parts[2]} exercise={exercises[2]}/>
+    <Part part={part1.name} exercise={part1.exercises}/>
+    <Part part={part2.name} exercise={part2.exercises}/>
+    <Part part={part3.name} exercise={part3.exercises}/>
     </React.Fragment>
     )
 }
 
 const Part = ({part, exercise}) => <p>{part} {exercise}</p>
 
-const Total = ({total}) => <p>Number of exercises {total}</p>
+const Total = ({course}) => {
+  let total = course.parts[0].exercises + course.parts[1].exercises + course.parts[2].exercises 
+  return (
+    <React.Fragment>
+      <p>Number of exercises {total}</p>
+    </React.Fragment>
+  )
+}
 
 const App = () => {
-  const course = 'Half Stack application development'
-  const part1 = 'Fundamentals of React'
-  const exercises1 = 10
-  const part2 = 'Using props to pass data'
-  const exercises2 = 7
-  const part3 = 'State of a component'
-  const exercises3 = 14
+  const course = {
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7
+      },
+      {
+        name: 'State of a component',
+        exercises: 14
+      }
+    ]
+  }
+
 
   return (
     <div>
       <Header course={course}/>
-      <Content parts= {[part1,part2,part3]} exercises={[exercises1,exercises2,exercises3]}/>
-      <Total total={exercises1 + exercises2 + exercises3}/>
+      <Content course= {course}/>
+      <Total course={course}/>
     </div>
   )
 }
