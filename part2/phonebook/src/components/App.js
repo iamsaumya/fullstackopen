@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import personService from '../services/persons'
-
+ 
+const Notification = ({notify}) => {
+  if (notify === null) {
+    return null
+  }
+  const {message , className} = notify
+  return (
+    <div className={className}>
+      {message}
+    </div>
+  )
+}
 
 const Persons = ({filterPersons,handleDelete}) => {
     return filterPersons.map((person) => <p key={person.id}>{person.name} {person.number} <button onClick={() => handleDelete(person.id,person.name)}>delete</button></p>)
 }
 
-const PersonForm = ({setPersons, persons}) => {
+const PersonForm = ({setPersons, persons, setMessage}) => {
 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
@@ -29,6 +40,10 @@ const PersonForm = ({setPersons, persons}) => {
         .putPerson(newPhonebook,existingPerson.id)
         .then((returnedPerson) => {
           setPersons(persons.map(person => person.id === returnedPerson.id ? returnedPerson : person))
+          setMessage({message:`Updated ${returnedPerson.name}`, className: 'success'})
+          setTimeout(() => {
+            setMessage(null)
+          },5000)
         })
       }
     }
@@ -37,6 +52,10 @@ const PersonForm = ({setPersons, persons}) => {
       .postPerson(newPhonebook)
       .then((returnedPerson)=>{
         setPersons(persons.concat(returnedPerson))
+        setMessage({message:`Added ${returnedPerson.name}`, className: 'success'})
+        setTimeout(() => {
+          setMessage(null)
+        },5000)
       })
     }
     setNewName('')
@@ -66,9 +85,9 @@ const PersonForm = ({setPersons, persons}) => {
 
 const App = () => {
   const [ persons, setPersons ] = useState([]) 
-
   const [ filter, setFilter ] = useState('')
   const [ filterPersons, setFilterPersons] = useState(persons)
+  const [ message, setMessage ] = useState(null)
 
   const handleFilterChange = (event) => {
       setFilter(event.target.value)
@@ -85,6 +104,12 @@ const App = () => {
         .then(persons => {
           setPersons(persons)
         })
+      })
+      .catch(error => {
+        setMessage({ message:`Information of ${name} has already been removed from server`, className: 'error'})
+        setTimeout(() => {
+          setMessage(null)
+        },5000)
       })
     }
   }
@@ -104,8 +129,9 @@ const App = () => {
       <div>
           filter shown with <input onChange={handleFilterChange} value={filter}></input>
       </div>
+      <Notification notify={message}/>
       <h2>add a new</h2>
-      <PersonForm setPersons={setPersons} persons={persons}/>
+      <PersonForm setPersons={setPersons} setMessage={setMessage} persons={persons}/>
       <h2>Numbers</h2>
       {filter === '' ? <Persons handleDelete={handleDelete} filterPersons={persons}/> : <Persons handleDelete={handleDelete} filterPersons={filterPersons}/>}
     </div>
