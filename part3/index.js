@@ -1,0 +1,86 @@
+const express = require('express')
+const { response } = require('express')
+const app = express()
+
+
+let persons = [
+    { 
+    "name": "Arto Hellas", 
+    "number": "040-123456",
+    "id": 1
+    },
+    { 
+    "name": "Ada Lovelace", 
+    "number": "39-44-5323523",
+    "id": 2
+    },
+    { 
+    "name": "Dan Abramov", 
+    "number": "12-43-234345",
+    "id": 3
+    },
+    { 
+    "name": "Mary Poppendieck", 
+    "number": "39-23-6423122",
+    "id": 4
+    }
+]
+
+app.use(express.json())
+
+app.get('/api/persons',(req,res)=>{
+    res.json(persons)
+})
+
+app.post('/api/persons',(req,res)=>{
+    const body = req.body
+    if(!body.name || !body.number){
+        res.status(400).json({
+            error: 'Cotent Missing'
+        })
+    }
+    else{
+
+        let isNamePresent = persons.find(person => person.name === body.name)
+        if(isNamePresent){
+            res.status(400).json({
+                'error' : 'Name must be unique'
+            })
+        }
+        else{
+            let id = Math.floor(Math.random() * 9999)
+            let person = {
+                name : body.name,
+                number: body.number,
+                id
+            }
+            persons = persons.concat(person)
+            return res.json(persons)
+        }
+    }
+})
+
+app.get('/api/persons/:id',(req,res)=>{
+    const person = persons.find(person => person.id === parseInt(req.params.id))
+    if(person){
+        res.json(person)
+    }
+    else{
+        res.status(404).end()
+    }
+})
+
+app.delete('/api/persons/:id',(req,res)=>{
+    persons = persons.filter(person => person.id !== parseInt(req.params.id))
+    res.status(204).end()
+})
+
+app.get('/info',(req,res)=>{
+    let date = new Date()
+    res.send(`Phonebook has info for ${persons.length} people <br><br> ${date}`)
+})
+
+const PORT = 3001
+app.listen(PORT,()=>{
+    console.log(`Successfully running on ${PORT}`)
+})
