@@ -2,8 +2,21 @@ const express = require('express')
 const morgan = require('morgan')
 const { token } = require('morgan')
 const cors = require('cors')
+const mongoose = require('mongoose')
 
 const app = express()
+
+// const url =
+//   `mongodb+srv://saumyafullstackopen:${password}@dang-thats-delicious-qoxqy.mongodb.net/Fullstackopen?retryWrites=true&w=majority`
+
+// mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+
+// const personSchema = new mongoose.Schema({
+//   name: String,
+//   number: String
+// })
+
+// const Person = mongoose.model('Person', personSchema)
 
 
 let persons = [
@@ -30,7 +43,11 @@ let persons = [
 ]
 
 app.use(express.json())
+
 app.use(cors())
+
+app.use(express.static('build'))
+
 
 morgan.token('post', function (req,res){
     if(req.method === 'POST')
