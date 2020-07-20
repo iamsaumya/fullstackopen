@@ -95,7 +95,7 @@ app.get('/info',(req,res)=>{
     res.send(`Phonebook has info for ${persons.length} people <br><br> ${date}`)
 })
 
-const PORT = 3001
+const PORT = process.env.PORT ||3001
 app.listen(PORT,()=>{
     console.log(`Successfully running on ${PORT}`)
 })
