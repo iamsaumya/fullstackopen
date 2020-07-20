@@ -1,5 +1,7 @@
 const express = require('express')
-const { response } = require('express')
+const morgan = require('morgan')
+const { request } = require('express')
+const { token } = require('morgan')
 const app = express()
 
 
@@ -27,6 +29,17 @@ let persons = [
 ]
 
 app.use(express.json())
+
+morgan.token('post', function (req,res){
+    if(req.method === 'POST')
+         return JSON.stringify(req.body)
+    else
+        return ''
+})
+
+morgan.format('postFormat',':method :url :status :res[content-length] - :response-time ms :post')
+
+app.use(morgan('postFormat'))
 
 app.get('/api/persons',(req,res)=>{
     res.json(persons)
