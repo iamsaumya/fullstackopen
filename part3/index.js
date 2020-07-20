@@ -1,7 +1,8 @@
 const express = require('express')
 const morgan = require('morgan')
-const { request } = require('express')
 const { token } = require('morgan')
+const cors = require('cors')
+
 const app = express()
 
 
@@ -29,6 +30,7 @@ let persons = [
 ]
 
 app.use(express.json())
+app.use(cors())
 
 morgan.token('post', function (req,res){
     if(req.method === 'POST')
@@ -68,7 +70,7 @@ app.post('/api/persons',(req,res)=>{
                 id
             }
             persons = persons.concat(person)
-            return res.json(persons)
+            return res.json(person)
         }
     }
 })
