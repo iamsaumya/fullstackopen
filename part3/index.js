@@ -33,7 +33,7 @@ app.get('/api/persons',(req,res)=>{
     })
 })
 
-app.post('/api/persons',(req,res)=>{
+app.post('/api/persons',(req,res,next)=>{
     const body = req.body
     if(!body.name || !body.number){
         res.status(400).json({

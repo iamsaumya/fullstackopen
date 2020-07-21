@@ -45,16 +45,27 @@ const PersonForm = ({setPersons, persons, setMessage}) => {
             setMessage(null)
           },5000)
         })
+        .catch((error) => {
+          setMessage({message: error.response.data.error,className: 'error'})
+          setTimeout(()=>{
+            setMessage(null)
+          },5000)
+        })
       }
     }
     else{
       personService
       .postPerson(newPhonebook)
       .then((returnedPerson)=>{
-        console.log("Log from react App",returnedPerson)
         setPersons(persons.concat(returnedPerson))
         setMessage({message:`Added ${returnedPerson.name}`, className: 'success'})
         setTimeout(() => {
+          setMessage(null)
+        },5000)
+      })
+      .catch((error) => {
+        setMessage({message: error.response.data.error,className: 'error'})
+        setTimeout(()=>{
           setMessage(null)
         },5000)
       })

@@ -1,25 +1,28 @@
 import axios from 'axios'
-// const baseURL = "https://stark-woodland-44857.herokuapp.com/api/persons"
-const baseURL = "http://localhost:3001/api/persons"
+const baseURL = "/api/persons"
 
-const getPersons = () => {
+const getPersons = async () => {
      const request = axios.get(baseURL)
-     return request.then(response => response.data)
+     const response = await request
+    return response.data
 }
 
-const postPerson = (person) => {
-    const request =  axios.post(baseURL,person)
-    return request.then( response => response.data)
+const postPerson = async (person) => {
+    const request = axios.post(baseURL,person)
+    const response = await request
+    return response.data
 }
 
-const deletePerson = (id) => {
+const deletePerson = async (id) => {
     const request = axios.delete(`${baseURL}/${id}`)
-    return request.then( response => response.data)
+    const response = await request
+    return response.data
 }
 
-const putPerson = (newPhonebook,id) => {
+const putPerson = async (newPhonebook,id) => {
     const request = axios.put(`${baseURL}/${id}`,newPhonebook)
-    return request.then(response => response.data)
+    const response = await request
+    return response.data
 }
 export default {
     getPersons,
