@@ -51,6 +51,7 @@ const PersonForm = ({setPersons, persons, setMessage}) => {
       personService
       .postPerson(newPhonebook)
       .then((returnedPerson)=>{
+        console.log("Log from react App",returnedPerson)
         setPersons(persons.concat(returnedPerson))
         setMessage({message:`Added ${returnedPerson.name}`, className: 'success'})
         setTimeout(() => {
