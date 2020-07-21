@@ -1,46 +1,11 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const { token } = require('morgan')
 const cors = require('cors')
-const mongoose = require('mongoose')
+const Person = require('./models/Person')
 
 const app = express()
-
-// const url =
-//   `mongodb+srv://saumyafullstackopen:${password}@dang-thats-delicious-qoxqy.mongodb.net/Fullstackopen?retryWrites=true&w=majority`
-
-// mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
-
-// const personSchema = new mongoose.Schema({
-//   name: String,
-//   number: String
-// })
-
-// const Person = mongoose.model('Person', personSchema)
-
-
-let persons = [
-    { 
-    "name": "Arto Hellas", 
-    "number": "040-123456",
-    "id": 1
-    },
-    { 
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523",
-    "id": 2
-    },
-    { 
-    "name": "Dan Abramov", 
-    "number": "12-43-234345",
-    "id": 3
-    },
-    { 
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122",
-    "id": 4
-    }
-]
 
 app.use(express.json())
 
@@ -61,58 +26,100 @@ morgan.format('postFormat',':method :url :status :res[content-length] - :respons
 app.use(morgan('postFormat'))
 
 app.get('/api/persons',(req,res)=>{
-    res.json(persons)
+    Person
+    .find({})
+    .then(persons => {
+        res.json(persons)
+    })
 })
 
 app.post('/api/persons',(req,res)=>{
     const body = req.body
     if(!body.name || !body.number){
         res.status(400).json({
-            error: 'Cotent Missing'
+            error: 'Name or Number Missing'
         })
     }
-    else{
+    else
+    {
+        let person = new Person({
+            name : body.name,
+            number: body.number,
+        })
 
-        let isNamePresent = persons.find(person => person.name === body.name)
-        if(isNamePresent){
-            res.status(400).json({
-                'error' : 'Name must be unique'
-            })
+        person
+        .save()
+        .then(savedPerson => {
+            return savedPerson.toJSON()
+        })
+        .then(savedandFormattedPerson => res.json(savedandFormattedPerson))
+        .catch(error => next(error))
+    }
+})
+
+app.get('/api/persons/:id', (req,res,next)=>{
+    Person
+    .findById(req.params.id)
+    .then(person => {
+        if(person){
+            res.json(person)
         }
         else{
-            let id = Math.floor(Math.random() * 9999)
-            let person = {
-                name : body.name,
-                number: body.number,
-                id
-            }
-            persons = persons.concat(person)
-            return res.json(person)
+            res.status(404).end()
         }
-    }
+    })
+    .catch(error => next(error))
 })
 
-app.get('/api/persons/:id',(req,res)=>{
-    const person = persons.find(person => person.id === parseInt(req.params.id))
-    if(person){
-        res.json(person)
-    }
-    else{
-        res.status(404).end()
-    }
+
+app.delete('/api/persons/:id', (req,res,next) => {
+    Person
+    .findByIdAndRemove(req.params.id)
+    .then((result) => {
+        res.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id',(req,res)=>{
-    persons = persons.filter(person => person.id !== parseInt(req.params.id))
-    res.status(204).end()
-})
-
-app.get('/info',(req,res)=>{
+app.get('/info', async (req,res)=>{
     let date = new Date()
+    persons = await Person.find({})
     res.send(`Phonebook has info for ${persons.length} people <br><br> ${date}`)
 })
 
-const PORT = process.env.PORT ||3001
+app.put('/api/persons/:id',(req,res)=>{
+    Person
+    .findOneAndUpdate({_id:req.params.id},req.body,{
+        new:true,
+        runValidators:true
+    })
+    .then((result)=>{
+        res.json(result)
+    })
+    .catch((error)=>next(error))
+})
+
+const unknownEndpoint = (req,res) => {
+    res.status(404).send({error: 'Unknown Endpoint'})
+}
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+  
+    if (error.name === 'CastError') {
+      return response.status(400).send({ error: 'Malformatted ID' })
+    } 
+    else if (error.name === 'ValidationError'){
+        return response.status(400).json({error: error.message})
+    }
+    next(error)
+}
+  
+app.use(errorHandler)
+
+const PORT = process.env.PORT
 app.listen(PORT,()=>{
     console.log(`Successfully running on ${PORT}`)
 })
