@@ -3,11 +3,11 @@ const cors = require("cors")
 const mongoose = require("mongoose")
 const config = require("./utils/config")
 const logger = require("./utils/logger")
+require("express-async-errors")
 const middlerware = require("./utils/middleware")
 const blogRouter = require("./controller/blogs")
-require("express-async-errors")
 
-logger.info("Connecting to",config.MONGODB_URI)
+// logger.info("Connecting to",config.MONGODB_URI)
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const app = express()
