@@ -11,6 +11,9 @@ const errorHandler = (error,req,res,next) => {
 	} else if (error.name === "ValidationError") {
 		return res.status(400).json({ error: error.message })
 	}
+	else if(error.name === "JsonWebTokenError"){
+		res.status(401).json({ error: error.message })
+	}
 	next(error)
 }
 
