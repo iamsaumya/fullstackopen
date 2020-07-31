@@ -39,7 +39,7 @@ userRouter.post("/", async (req,res) => {
 	res.status(201).json(savedUser)
 })
 
-userRouter.get("/",async (req,res) => {
+userRouter.get("/", async (req,res) => {
 	const users = await User.find({}).populate("blogs")
 	res.json(users)
 })
