@@ -6,7 +6,7 @@ function signupValidation(body){
 	const password = body.password
 	const username = body.username
 
-	if(!(password && username)){
+	if(password === undefined || username === undefined){
 		return "Username or Password missing"
 	}
 	else if(password.length < 3){
@@ -15,13 +15,12 @@ function signupValidation(body){
 	else if(username.length <3){
 		return "Username must be atleast 3 characters long"
 	}
-	return
+	return undefined
 }
 userRouter.post("/", async (req,res) => {
 	const body = req.body
 
 	const validationMessage = signupValidation(body)
-
 	if(validationMessage){
 		return res.status(400).send({ error: validationMessage })
 	}
@@ -37,7 +36,7 @@ userRouter.post("/", async (req,res) => {
 
 	const savedUser = await user.save()
 
-	res.json(savedUser)
+	res.status(201).json(savedUser)
 })
 
 userRouter.get("/",async (req,res) => {
