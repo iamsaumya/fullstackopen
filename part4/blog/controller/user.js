@@ -2,10 +2,32 @@ const  userRouter = require("express").Router()
 const User = require("../models/user")
 const bcrypt = require("bcrypt")
 
+function signupValidation(body){
+	const password = body.password
+	const username = body.username
+
+	if(!(password && username)){
+		return "Username or Password missing"
+	}
+	else if(password.length < 3){
+		return "Password must be atleast 3 characters long"
+	}
+	else if(username.length <3){
+		return "Username must be atleast 3 characters long"
+	}
+	return
+}
 userRouter.post("/", async (req,res) => {
-	const body = res.body
+	const body = req.body
+
+	const validationMessage = signupValidation(body)
+
+	if(validationMessage){
+		return res.status(400).send({ error: validationMessage })
+	}
+
 	const salt = 10
-	const passwordHash  = new bcrypt(body.password,salt)
+	const passwordHash  = await bcrypt.hash(body.password,salt)
 
 	const user = new User({
 		name: body.name,
@@ -18,4 +40,8 @@ userRouter.post("/", async (req,res) => {
 	res.json(savedUser)
 })
 
+userRouter.get("/",async (req,res) => {
+	const users = await User.find({})
+	res.json(users)
+})
 module.exports = userRouter
