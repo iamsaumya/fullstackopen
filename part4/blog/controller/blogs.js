@@ -22,6 +22,10 @@ blogRouter.post("/blogs", async (request, response) => {
 
 	const user = await User.findById(decodedToken.id)
 
+	if(!body.title || !body.url){
+		return response.status(400).json({ error: "title or url is missing" })
+	}
+
 	const blog = new Blog({
 		title : body.title,
 		author: body.author,

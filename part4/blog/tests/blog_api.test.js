@@ -3,7 +3,23 @@ const supertest = require("supertest")
 const app = require("../app")
 const api = supertest(app)
 const Blog = require("../models/blog")
+const User = require("../models/user")
 const helper = require("./test.helper")
+
+beforeAll(async () => {
+	await User.deleteMany({})
+	const user = {
+		"username" : "tester",
+		"name" : "Testing",
+		"password" : "testing"
+	}
+
+	await api
+		.post("/api/users")
+		.send(user)
+		.set("Accept","application/json")
+		.expect("Content-Type",/application\/json/)
+})
 
 beforeEach(async () => {
 	await Blog.deleteMany({})
@@ -31,6 +47,16 @@ test("verify GET /api/blogs sanity", async () => {
 })
 
 test("verify POST /api/blogs adding a blog", async () => {
+	const loginUser = {
+		"username" : "tester",
+		"password": "testing"
+	}
+	const loggedUser = await api
+		.post("/api/login")
+		.send(loginUser)
+		.set("Accept","application/json")
+		.expect("Content-Type",/application\/json/)
+
 	const blog = {
 		title: "TDD harms architecture",
 		author: "Robert C. Martin",
@@ -40,6 +66,7 @@ test("verify POST /api/blogs adding a blog", async () => {
 	await api
 		.post("/api/blogs")
 		.send(blog)
+		.set("Authorization",`Bearer ${loggedUser.body.token}`)
 		.set("Accept","application/json")
 		.expect("Content-Type",/json/)
 		.expect(201)
@@ -51,6 +78,16 @@ test("verify POST /api/blogs adding a blog", async () => {
 })
 
 test("verify if likes property is missing then it defaults to 0",  async() => {
+	const loginUser = {
+		"username" : "tester",
+		"password": "testing"
+	}
+	const loggedUser = await api
+		.post("/api/login")
+		.send(loginUser)
+		.set("Accept","application/json")
+		.expect("Content-Type",/application\/json/)
+
 	const blog = {
 		title: "Type wars",
 		author: "Robert C. Martin",
@@ -60,6 +97,7 @@ test("verify if likes property is missing then it defaults to 0",  async() => {
 	const response = await api
 		.post("/api/blogs")
 		.send(blog)
+		.set("Authorization",`Bearer ${loggedUser.body.token}`)
 		.set("Accept","application/json")
 		.expect("Content-Type",/json/)
 		.expect(201)
@@ -69,15 +107,47 @@ test("verify if likes property is missing then it defaults to 0",  async() => {
 })
 
 test("verify if the POST /api/blogs requires title and url in the body", async () => {
+	const loginUser = {
+		"username" : "tester",
+		"password": "testing"
+	}
+	const loggedUser = await api
+		.post("/api/login")
+		.send(loginUser)
+		.set("Accept","application/json")
+		.expect("Content-Type",/application\/json/)
+
+
 	const blog = {
 		author: "Robert C. Martin",
 		likes: 9
 	}
-	await api
+	const response = await api
 		.post("/api/blogs")
 		.send(blog)
 		.set("Accept","application/json")
+		.set("Authorization",`Bearer ${loggedUser.body.token}`)
 		.expect(400)
+
+	expect(response.body.error).toBe("title or url is missing")
+})
+
+test("verify if the POST /api/blogs only works when authorized",async () => {
+	const blog = {
+		title: "TDD harms architecture",
+		author: "Robert C. Martin",
+		url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
+		likes: 9
+	}
+
+	const response = await api
+		.post("/api/blogs")
+		.send(blog)
+		.set("Accept","application/json")
+		.expect("Content-Type",/json/)
+		.expect(401)
+
+	expect(response.body.error).toBe("jwt must be provided")
 })
 
 afterAll(() => {
