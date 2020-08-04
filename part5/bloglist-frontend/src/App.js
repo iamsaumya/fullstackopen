@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Login from './components/Login'
 import BlogForm from './components/BlogForm'
@@ -15,6 +15,7 @@ const App = () => {
   const [update,setUpdate] = useState(null)
   const [notify,setNotify] = useState(null)
 
+  const blogFormRef = useRef()
   const handleSubmit = async (e) => {
     e.preventDefault()
     try{
@@ -40,6 +41,7 @@ const App = () => {
 
   const addBlogs = async (blogObject) => {
     try{
+      blogFormRef.current.toggleVisibility()
       const response = await blogService.createBlog(blogObject)
       setBlogs(blogs.concat(response))
       setNotify({ message: `a new blog ${response.title} by ${response.author}`, type: 'success' })
@@ -72,7 +74,7 @@ const App = () => {
 
   const createBlog = () => {
     return (
-      <Togglable buttonLabel="Create Blog">
+      <Togglable buttonLabel="Create Blog" ref={blogFormRef}>
         <BlogForm
           addBlogs = {addBlogs}
         />
