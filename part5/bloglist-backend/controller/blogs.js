@@ -78,4 +78,11 @@ blogRouter.patch("/blogs/:id", async(request,response) => {
 		response.status(400).send({ error: "Likes property is missing" })
 	}
 })
+
+blogRouter.delete("/blogs/:id",async(request,response) => {
+	const id = request.params.id
+	await Blog.findByIdAndRemove(id)
+	response.status(204).end()
+})
+
 module.exports = blogRouter

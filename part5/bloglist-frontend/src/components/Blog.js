@@ -21,12 +21,24 @@ const Blog = ({ blog, setUpdate }) => {
     setUpdate(Math.floor(Math.random() * 1000))
   }
 
+  const handleRemoving = async () => {
+    const result = window.confirm(`Remove ${blog.title} by ${blog.author}`)
+    
+    if(result){
+      await blogService.removeBlog({
+        id: blog.id
+      })
+      setUpdate(Math.floor(Math.random()*100))  
+    }
+  }
+
   const showFullBlog = () => {
     return (
       <div>
         <p>{blog.url}</p>
         <p>{blog.likes} <button onClick={() => handleLikes()}>like</button></p>
         <p>{blog.author}</p>
+        <button onClick={()=>handleRemoving()}>Remove</button>
       </div>    
       )
   }
