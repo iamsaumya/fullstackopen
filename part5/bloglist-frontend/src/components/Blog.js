@@ -38,7 +38,7 @@ const Blog = ({ blog, setUpdate }) => {
       <div>
         <p>{blog.url}</p>
         <p>{blog.likes} <button onClick={() => handleLikes()}>like</button></p>
-        <p>{blog.author}</p>
+        <p>{blog.user.name}</p>
         <button onClick={() => handleRemoving()}>Remove</button>
       </div>
     )
@@ -46,7 +46,7 @@ const Blog = ({ blog, setUpdate }) => {
 
   return (
     <div style={blogStyle}>
-      <b>{blog.title}</b> <button onClick={() => setShowFull(!showfull)}>{showfull ? 'hide': 'view'}</button>
+      <b>{blog.title}</b> <i>{blog.author}</i> <button onClick={() => setShowFull(!showfull)}>{showfull ? 'hide': 'view'}</button>
       {showfull && showFullBlog()}
     </div>
   )
