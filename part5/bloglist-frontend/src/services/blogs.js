@@ -13,14 +13,14 @@ const getAll = async () => {
 }
 
 const login = async credentials => {
-  const request = await axios.post("/api/login",credentials)
+  const request = await axios.post('/api/login',credentials)
   return request.data
 
 }
 
 const createBlog = async blog => {
   const header = {
-    headers: {Authorization: token}
+    headers: { Authorization: token }
   }
 
   const response = await axios.post(baseUrl,blog,header)
@@ -29,18 +29,18 @@ const createBlog = async blog => {
 
 const updateBlog = async blog => {
   const header = {
-    headers: {Authorization: token}
+    headers: { Authorization: token }
   }
 
-  const response = await axios.patch(`${baseUrl}/${blog.id}`,{likes: blog.likes},header)
+  const response = await axios.patch(`${baseUrl}/${blog.id}`,{ likes: blog.likes },header)
   return response.data
 }
 
 const removeBlog = async blog => {
   const header  = {
-    headers: {Authorization: token}
+    headers: { Authorization: token }
   }
   await axios.delete(`${baseUrl}/${blog.id}`,header)
 }
 
-export default { getAll, login, setToken, createBlog, updateBlog, removeBlog}
+export default { getAll, login, setToken, createBlog, updateBlog, removeBlog }

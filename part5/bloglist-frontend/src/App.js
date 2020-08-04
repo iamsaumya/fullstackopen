@@ -9,8 +9,8 @@ import blogService from './services/blogs'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username,setUsername] = useState("")
-  const [password,setPassword] = useState("")
+  const [username,setUsername] = useState('')
+  const [password,setPassword] = useState('')
   const [user,setUser] = useState(null)
   const [update,setUpdate] = useState(null)
   const [notify,setNotify] = useState(null)
@@ -18,15 +18,15 @@ const App = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try{
-      const user = await blogService.login({username,password})
+      const user = await blogService.login({ username,password })
       setUser(user)
-      window.localStorage.setItem("loggedBlogUser",JSON.stringify(user))
+      window.localStorage.setItem('loggedBlogUser',JSON.stringify(user))
       blogService.setToken(user.token)
-      setUsername("")
-      setPassword("")
+      setUsername('')
+      setPassword('')
     }
     catch(exception){
-      setNotify({message: exception.response.data.error, type:"error"})
+      setNotify({ message: exception.response.data.error, type:'error' })
       setTimeout(() => {
         setNotify(null)
       },5000)
@@ -34,21 +34,21 @@ const App = () => {
   }
 
   const handleLogout = async () => {
-      window.localStorage.removeItem("loggedBlogUser")
-      setUser(null)
+    window.localStorage.removeItem('loggedBlogUser')
+    setUser(null)
   }
 
   const addBlogs = async (blogObject) => {
     try{
       const response = await blogService.createBlog(blogObject)
       setBlogs(blogs.concat(response))
-      setNotify({message: `a new blog ${response.title} by ${response.author}`, type: "success"})
+      setNotify({ message: `a new blog ${response.title} by ${response.author}`, type: 'success' })
       setTimeout(() => {
         setNotify(null)
       },5000)
     }
     catch(exception){
-      setNotify({message: exception.response.data.error, type:"error"})
+      setNotify({ message: exception.response.data.error, type:'error' })
       setTimeout(() => {
         setNotify(null)
       },5000)
@@ -58,11 +58,11 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [update])
 
   useEffect(() => {
-    const loggedBlogUser = window.localStorage.getItem("loggedBlogUser")
+    const loggedBlogUser = window.localStorage.getItem('loggedBlogUser')
     if(loggedBlogUser){
       const user = JSON.parse(loggedBlogUser)
       setUser(user)
@@ -71,11 +71,11 @@ const App = () => {
   },[])
 
   const createBlog = () => {
-    return (  
+    return (
       <Togglable buttonLabel="Create Blog">
-          <BlogForm
-              addBlogs = {addBlogs}
-          />
+        <BlogForm
+          addBlogs = {addBlogs}
+        />
       </Togglable>
     )
   }
@@ -108,14 +108,14 @@ const App = () => {
       {user === null && loginForm()}
       {user !== null &&
         <div>
-        <h2>blogs</h2>
-        {logout()}
-        {createBlog()}
-        {blogs.sort((a,b) => a.likes > b.likes ? -1 : 1) && blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} setUpdate={setUpdate}/>
-        )}
-      </div>
-    }
+          <h2>blogs</h2>
+          {logout()}
+          {createBlog()}
+          {blogs.sort((a,b) => a.likes > b.likes ? -1 : 1) && blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} setUpdate={setUpdate}/>
+          )}
+        </div>
+      }
     </div>
   )
 }
