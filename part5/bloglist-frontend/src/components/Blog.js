@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, setUpdate }) => {
+const Blog = ({ blog, handleLikes, handleRemoving }) => {
 
   const [showfull,setShowFull] = useState(false)
 
@@ -14,38 +13,19 @@ const Blog = ({ blog, setUpdate }) => {
     marginBottom: 5
   }
 
-  const handleLikes = async () => {
-    await blogService.updateBlog({
-      id: blog.id,
-      likes: blog.likes + 1
-    })
-    setUpdate(Math.floor(Math.random() * 1000))
-  }
-
-  const handleRemoving = async () => {
-    const result = window.confirm(`Remove ${blog.title} by ${blog.author}`)
-
-    if(result){
-      await blogService.removeBlog({
-        id: blog.id
-      })
-      setUpdate(Math.floor(Math.random()*100))
-    }
-  }
-
   const showFullBlog = () => {
     return (
       <div>
         <p>{blog.url}</p>
-        <p>{blog.likes} <button onClick={() => handleLikes()}>like</button></p>
+        <p>{blog.likes} <button onClick={() => handleLikes(blog.id,blog.likes)}>like</button></p>
         <p>{blog.user.name}</p>
-        <button onClick={() => handleRemoving()}>Remove</button>
+        <button onClick={() => handleRemoving(blog)}>Remove</button>
       </div>
     )
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       <b>{blog.title}</b> <i>{blog.author}</i> <button onClick={() => setShowFull(!showfull)}>{showfull ? 'hide': 'view'}</button>
       {showfull && showFullBlog()}
     </div>

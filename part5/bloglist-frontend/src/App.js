@@ -57,6 +57,25 @@ const App = () => {
     }
   }
 
+  const handleLikes = async (id,likes) => {
+    await blogService.updateBlog({
+      id: id,
+      likes: likes + 1
+    })
+    setUpdate(Math.floor(Math.random() * 1000))
+  }
+
+  const handleRemoving = async (blog) => {
+    const result = window.confirm(`Remove ${blog.title} by ${blog.author}`)
+
+    if(result){
+      await blogService.removeBlog({
+        id: blog.id
+      })
+      setUpdate(Math.floor(Math.random()*100))
+    }
+  }
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -114,7 +133,7 @@ const App = () => {
           {logout()}
           {createBlog()}
           {blogs.sort((a,b) => a.likes > b.likes ? -1 : 1) && blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} setUpdate={setUpdate}/>
+            <Blog key={blog.id} blog={blog} handleLikes={handleLikes} handleRemoving={handleRemoving}/>
           )}
         </div>
       }
