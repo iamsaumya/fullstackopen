@@ -59,7 +59,7 @@ blogRouter.delete("/blogs/:id",async(request,response) => {
 	}
 	else{
 		return response.status(401).json({
-			error: "Unauthorized to access the blog"
+			error: "Unauthorized to delete the blog"
 		})
 	}
 })
