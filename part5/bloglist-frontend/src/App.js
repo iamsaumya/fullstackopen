@@ -69,10 +69,15 @@ const App = () => {
     const result = window.confirm(`Remove ${blog.title} by ${blog.author}`)
 
     if(result){
-      await blogService.removeBlog({
-        id: blog.id
-      })
-      setUpdate(Math.floor(Math.random()*100))
+      try{
+        await blogService.removeBlog({
+          id: blog.id
+        })
+        setUpdate(Math.floor(Math.random()*100))  
+      }
+      catch(exception){
+        setNotify({message: exception.response.data.error, type: 'error'})
+      }
     }
   }
 
