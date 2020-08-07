@@ -20,7 +20,7 @@ const App = () => {
   return (
     <div>
       <h2>Anecdotes</h2>
-      {anecdotes.map(anecdote =>
+      {anecdotes.sort((a,b) => a.votes < b.votes ? 1 : -1) && anecdotes.map(anecdote =>
         <div key={anecdote.id}>
           <div>
             {anecdote.content}
