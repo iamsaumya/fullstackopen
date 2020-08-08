@@ -9,7 +9,7 @@ const AnecdoteList = () => {
         if(filter === ""){
             return anecdotes;
         }
-        return anecdotes.filter(anecdote => anecdote.content.indexOf(filter) > 0)
+        return anecdotes.filter(anecdote => anecdote.content.toLowerCase().indexOf(filter.toLowerCase()) > -1 )
     })
     const dispatch = useDispatch()
   
