@@ -6,10 +6,11 @@ import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import {showNotifcation} from './reducers/notificationReducer'
-import {useDispatch} from 'react-redux'
+import {setBlogs,initializeBlogs} from './reducers/blogReducer'
+import {useDispatch, useSelector} from 'react-redux'
 const App = () => {
   const dispatch  = useDispatch()
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector(state => state.blogs)
   const [username,setUsername] = useState('')
   const [password,setPassword] = useState('')
   const [user,setUser] = useState(null)
@@ -39,12 +40,12 @@ const App = () => {
   const addBlogs = async (blogObject) => {
     try{
       blogFormRef.current.toggleVisibility()
-      const response = await blogService.createBlog(blogObject)
-      setBlogs(blogs.concat(response))
-      dispatch(showNotifcation(`a new blog ${response.title} by ${response.author}`,5))
+      dispatch(setBlogs(blogObject))
+      dispatch(showNotifcation(`a new blog ${blogObject.title} by ${blogObject.author}`,5))
     }
     catch(exception){
       dispatch(showNotifcation(exception.response.data.error,5))
+      console.error(exception)
     }
   }
 
@@ -73,10 +74,8 @@ const App = () => {
   }
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
-  }, [update])
+      dispatch(initializeBlogs())
+  }, [update,dispatch])
 
   useEffect(() => {
     const loggedBlogUser = window.localStorage.getItem('loggedBlogUser')

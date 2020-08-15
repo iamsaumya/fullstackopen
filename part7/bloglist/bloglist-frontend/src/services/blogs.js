@@ -8,8 +8,13 @@ const setToken = newToken => {
 }
 
 const getAll = async () => {
-  const request = await axios.get(baseUrl)
-  return request.data
+  try{
+    const request = await axios.get(baseUrl)
+    return request.data
+  }
+  catch(e) {
+     throw new Error(e)
+  }
 }
 
 const login = async credentials => {
