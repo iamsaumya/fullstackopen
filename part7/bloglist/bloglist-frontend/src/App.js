@@ -4,12 +4,14 @@ import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
 import Notification from "./components/Notification";
 import Blogs from "./components/Blogs";
+import Users from "./components/Users";
 
 import blogService from "./services/blogs";
 import { showNotifcation } from "./reducers/notificationReducer";
 import { setBlogs } from "./reducers/blogReducer";
 import { setUser } from "./reducers/userReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { Switch, Route } from "react-router-dom";
 
 const App = () => {
 	const dispatch = useDispatch();
@@ -72,8 +74,17 @@ const App = () => {
 				<div>
 					<h2>blogs</h2>
 					{logout()}
-					{createBlog()}
-					<Blogs />
+					<Switch>
+						<Route path="/users">
+							<Users />
+						</Route>
+						<Route path="/">
+							<div>
+								{createBlog()}
+								<Blogs />
+							</div>
+						</Route>
+					</Switch>
 				</div>
 			)}
 		</div>
