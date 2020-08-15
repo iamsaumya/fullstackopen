@@ -1,6 +1,30 @@
-import React from 'react'
+import React,{useState} from 'react'
+import {useDispatch} from 'react-redux'
+import {setUser} from '../reducers/userReducer'
+import {showNotifcation} from '../reducers/notificationReducer'
+import blogService from '../services/blogs'
 
-const Login = ({ handleSubmit,username,setUsername,password,setPassword }) => {
+const Login = () => {
+
+  const dispatch = useDispatch()
+  const [username,setUsername] = useState('')
+  const [password,setPassword] = useState('')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try{
+      const user = await blogService.login({ username,password })
+      dispatch(setUser(user))
+      window.localStorage.setItem('loggedBlogUser',JSON.stringify(user))
+      blogService.setToken(user.token)
+      setUsername('')
+      setPassword('')
+    }
+    catch(exception){
+      dispatch(showNotifcation(exception.response.data.error,5))
+    }
+  }
+
   return (
     <div>
       <h2>Log in to application</h2>

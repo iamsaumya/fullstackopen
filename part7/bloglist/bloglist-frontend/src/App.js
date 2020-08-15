@@ -14,25 +14,9 @@ const App = () => {
   const {blogs,user} = useSelector(state =>  { 
     return {blogs: state.blogs , user: state.user}
   })
-  const [username,setUsername] = useState('')
-  const [password,setPassword] = useState('')
   const [update,setUpdate] = useState(null)
 
   const blogFormRef = useRef()
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    try{
-      const user = await blogService.login({ username,password })
-      dispatch(setUser(user))
-      window.localStorage.setItem('loggedBlogUser',JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUsername('')
-      setPassword('')
-    }
-    catch(exception){
-      dispatch(showNotifcation(exception.response.data.error,5))
-    }
-  }
 
   const handleLogout = async () => {
     window.localStorage.removeItem('loggedBlogUser')
@@ -98,20 +82,6 @@ const App = () => {
     )
   }
 
-  const loginForm = () => {
-    return (
-      <div>
-        <Login
-          handleSubmit={handleSubmit}
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-        />
-      </div>
-    )
-  }
-
   const logout = () => {
     return(
       <div>
@@ -126,7 +96,7 @@ const App = () => {
   return (
     <div>
       <Notification/>
-      {user === null && loginForm()}
+      {user === null && <Login/>}
       {user !== null &&
         <div>
           <h2>blogs</h2>
