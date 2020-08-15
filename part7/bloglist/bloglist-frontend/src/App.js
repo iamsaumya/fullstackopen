@@ -3,17 +3,17 @@ import Blog from './components/Blog'
 import Login from './components/Login'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
-
 import Notification from './components/Notification'
 import blogService from './services/blogs'
-
+import {showNotifcation} from './reducers/notificationReducer'
+import {useDispatch} from 'react-redux'
 const App = () => {
+  const dispatch  = useDispatch()
   const [blogs, setBlogs] = useState([])
   const [username,setUsername] = useState('')
   const [password,setPassword] = useState('')
   const [user,setUser] = useState(null)
   const [update,setUpdate] = useState(null)
-  const [notify,setNotify] = useState(null)
 
   const blogFormRef = useRef()
   const handleSubmit = async (e) => {
@@ -27,10 +27,7 @@ const App = () => {
       setPassword('')
     }
     catch(exception){
-      setNotify({ message: exception.response.data.error, type:'error' })
-      setTimeout(() => {
-        setNotify(null)
-      },5000)
+      dispatch(showNotifcation(exception.response.data.error,5))
     }
   }
 
@@ -44,16 +41,10 @@ const App = () => {
       blogFormRef.current.toggleVisibility()
       const response = await blogService.createBlog(blogObject)
       setBlogs(blogs.concat(response))
-      setNotify({ message: `a new blog ${response.title} by ${response.author}`, type: 'success' })
-      setTimeout(() => {
-        setNotify(null)
-      },5000)
+      dispatch(showNotifcation(`a new blog ${response.title} by ${response.author}`,5))
     }
     catch(exception){
-      setNotify({ message: exception.response.data.error, type:'error' })
-      setTimeout(() => {
-        setNotify(null)
-      },5000)
+      dispatch(showNotifcation(exception.response.data.error,5))
     }
   }
 
@@ -76,7 +67,7 @@ const App = () => {
         setUpdate(Math.floor(Math.random()*100))  
       }
       catch(exception){
-        setNotify({message: exception.response.data.error, type: 'error'})
+        dispatch(showNotifcation(exception.response.data.error,5))
       }
     }
   }
@@ -130,7 +121,7 @@ const App = () => {
 
   return (
     <div>
-      {notify !== null && <Notification notify={notify}/>}
+      <Notification/>
       {user === null && loginForm()}
       {user !== null &&
         <div>
