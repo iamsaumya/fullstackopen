@@ -7,13 +7,15 @@ import Notification from './components/Notification'
 import blogService from './services/blogs'
 import {showNotifcation} from './reducers/notificationReducer'
 import {setBlogs,initializeBlogs} from './reducers/blogReducer'
+import {setUser} from './reducers/userReducer'
 import {useDispatch, useSelector} from 'react-redux'
 const App = () => {
   const dispatch  = useDispatch()
-  const blogs = useSelector(state => state.blogs)
+  const {blogs,user} = useSelector(state =>  { 
+    return {blogs: state.blogs , user: state.user}
+  })
   const [username,setUsername] = useState('')
   const [password,setPassword] = useState('')
-  const [user,setUser] = useState(null)
   const [update,setUpdate] = useState(null)
 
   const blogFormRef = useRef()
@@ -21,7 +23,7 @@ const App = () => {
     e.preventDefault()
     try{
       const user = await blogService.login({ username,password })
-      setUser(user)
+      dispatch(setUser(user))
       window.localStorage.setItem('loggedBlogUser',JSON.stringify(user))
       blogService.setToken(user.token)
       setUsername('')
@@ -34,7 +36,7 @@ const App = () => {
 
   const handleLogout = async () => {
     window.localStorage.removeItem('loggedBlogUser')
-    setUser(null)
+    dispatch(setUser(null))
   }
 
   const addBlogs = async (blogObject) => {
@@ -81,7 +83,7 @@ const App = () => {
     const loggedBlogUser = window.localStorage.getItem('loggedBlogUser')
     if(loggedBlogUser){
       const user = JSON.parse(loggedBlogUser)
-      setUser(user)
+      dispatch(setUser(user))
       blogService.setToken(user.token)
     }
   },[])
