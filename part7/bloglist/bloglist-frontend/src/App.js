@@ -115,7 +115,10 @@ const App = () => {
   const logout = () => {
     return(
       <div>
-        {user.name} logged in <button onClick={handleLogout}>Logout</button>
+      <div>
+        {user.name} logged in
+      </div>
+       <button onClick={handleLogout}>Logout</button>
       </div>
     )
   }
