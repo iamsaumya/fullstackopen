@@ -1,20 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
 import Login from './components/Login'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import Notification from './components/Notification'
+import Blogs from './components/Blogs'
+
 import blogService from './services/blogs'
 import {showNotifcation} from './reducers/notificationReducer'
 import {setBlogs,initializeBlogs} from './reducers/blogReducer'
 import {setUser} from './reducers/userReducer'
 import {useDispatch, useSelector} from 'react-redux'
+
 const App = () => {
   const dispatch  = useDispatch()
-  const {blogs,user} = useSelector(state =>  { 
-    return {blogs: state.blogs , user: state.user}
-  })
-  const [update,setUpdate] = useState(null)
+  const user = useSelector(state => state.user)
 
   const blogFormRef = useRef()
 
@@ -34,34 +33,6 @@ const App = () => {
       console.error(exception)
     }
   }
-
-  const handleLikes = async (id,likes) => {
-    await blogService.updateBlog({
-      id: id,
-      likes: likes + 1
-    })
-    setUpdate(Math.floor(Math.random() * 1000))
-  }
-
-  const handleRemoving = async (blog) => {
-    const result = window.confirm(`Remove ${blog.title} by ${blog.author}`)
-
-    if(result){
-      try{
-        await blogService.removeBlog({
-          id: blog.id
-        })
-        setUpdate(Math.floor(Math.random()*100))  
-      }
-      catch(exception){
-        dispatch(showNotifcation(exception.response.data.error,5))
-      }
-    }
-  }
-
-  useEffect(() => {
-      dispatch(initializeBlogs())
-  }, [update,dispatch])
 
   useEffect(() => {
     const loggedBlogUser = window.localStorage.getItem('loggedBlogUser')
@@ -102,9 +73,7 @@ const App = () => {
           <h2>blogs</h2>
           {logout()}
           {createBlog()}
-          {blogs.sort((a,b) => a.likes > b.likes ? -1 : 1) && blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} handleLikes={handleLikes} handleRemoving={handleRemoving}/>
-          )}
+          <Blogs/>
         </div>
       }
     </div>
