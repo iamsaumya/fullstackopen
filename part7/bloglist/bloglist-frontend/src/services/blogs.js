@@ -20,7 +20,6 @@ const getAll = async () => {
 const login = async credentials => {
   const request = await axios.post('/api/login',credentials)
   return request.data
-
 }
 
 const createBlog = async blog => {

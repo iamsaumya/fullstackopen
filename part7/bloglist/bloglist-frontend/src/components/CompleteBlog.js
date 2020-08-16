@@ -21,7 +21,7 @@ const CompleteBlog = () => {
 
 		if (result) {
 			try {
-                dispatch(deleteBlog(blog.id));
+                await dispatch(deleteBlog(blog.id));
                 window.location.href = '/'; 
             } catch (exception) {
 				dispatch(showNotifcation(exception.response.data.error, 5));
