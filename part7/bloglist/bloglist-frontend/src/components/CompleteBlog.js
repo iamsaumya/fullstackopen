@@ -2,7 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addLike, deleteBlog } from "../reducers/blogReducer";
-import {showNotifcation} from "../reducers/notificationReducer"
+import { showNotifcation } from "../reducers/notificationReducer";
 const CompleteBlog = () => {
 	const dispatch = useDispatch();
 	const id = useParams().id;
@@ -21,9 +21,9 @@ const CompleteBlog = () => {
 
 		if (result) {
 			try {
-                await dispatch(deleteBlog(blog.id));
-                window.location.href = '/'; 
-            } catch (exception) {
+				await dispatch(deleteBlog(blog.id));
+				window.location.href = "/";
+			} catch (exception) {
 				dispatch(showNotifcation(exception.response.data.error, 5));
 			}
 		}
@@ -49,7 +49,13 @@ const CompleteBlog = () => {
 					</button>
 				</p>
 				<p>{`added by ${blog.author}`}</p>
-                <button onClick={() => handleRemoving(blog)}>Remove</button>
+				<h3>comments</h3>
+				<ul>
+					{blog.comments.map((comment) => (
+						<li key={comment}>{comment}</li>
+					))}
+				</ul>
+				<button onClick={() => handleRemoving(blog)}>Remove</button>
 			</div>
 		</div>
 	);

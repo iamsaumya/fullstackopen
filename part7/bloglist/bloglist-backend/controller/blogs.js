@@ -79,4 +79,19 @@ blogRouter.patch("/blogs/:id", async(request,response) => {
 	}
 })
 
+blogRouter.post("/blogs/:id/comments",async(request,response) => {
+	const id = request.params.id
+
+	if(request.body.comment){
+		const blog = await Blog.
+			findByIdAndUpdate(id,{ ["$addToSet"]: { comments: request.body.comment } },
+				{ new : true }
+			)
+		response.json(blog)
+	}
+	else{
+		response.status(400).send({ error: "Comment is missing" })
+	}
+})
+
 module.exports = blogRouter
