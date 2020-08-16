@@ -1,23 +1,32 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Login from "./components/Login";
 import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
 import Notification from "./components/Notification";
 import Blogs from "./components/Blogs";
 import Users from "./components/Users";
-
+import User from "./components/User"
 import blogService from "./services/blogs";
+import userService from "./services/users";
+
 import { showNotifcation } from "./reducers/notificationReducer";
 import { setBlogs } from "./reducers/blogReducer";
 import { setLoggedUser } from "./reducers/loggedUserReducer";
+import {addUsers} from './reducers/usersReducer'
+
+
 import { useDispatch, useSelector } from "react-redux";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useRouteMatch } from "react-router-dom";
 
 const App = () => {
 	const dispatch = useDispatch();
 	const loggedInUser = useSelector((state) => state.loggedInUser);
+	const [users, setUsers] = useState([]);
 
 	const blogFormRef = useRef();
+
+	const match = useRouteMatch("/users/:id")
+	const user = match ? users.find(user => user.id === match.params.id) : null
 
 	useEffect(() => {
 		const loggedBlogUser = window.localStorage.getItem("loggedBlogUser");
@@ -26,6 +35,15 @@ const App = () => {
 			dispatch(setLoggedUser(savedUser));
 			blogService.setToken(savedUser.token);
 		}
+	}, [dispatch]);
+
+	useEffect(() => {
+		(async () => {
+			const allUsers = await userService.getAll();
+			console.log(allUsers);
+			dispatch(addUsers(allUsers))
+			setUsers(allUsers);
+		})();
 	}, [dispatch]);
 
 	const handleLogout = async () => {
@@ -75,8 +93,11 @@ const App = () => {
 					<h2>blogs</h2>
 					{logout()}
 					<Switch>
+						<Route path="/users/:id">
+							<User user={user}/>
+						</Route>
 						<Route path="/users">
-							<Users />
+							<Users users={users} />
 						</Route>
 						<Route path="/">
 							<div>

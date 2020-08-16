@@ -1,15 +1,5 @@
-import React, { useEffect, useState } from "react";
-import userService from "../services/users";
-
-const Users = () => {
-	const [users, setUsers] = useState([]);
-	useEffect(() => {
-		(async () => {
-			const allUsers = await userService.getAll();
-			console.log(allUsers);
-			setUsers(allUsers);
-		})();
-	}, []);
+import React from "react";
+const Users = ({users}) => {
 	return (
 		<div>
 			<h2>Users</h2>
@@ -26,7 +16,7 @@ const Users = () => {
 					{users.map((user) => {
 						return (
 							<tr key={user.username}>
-								<td>{user.name}</td>
+								<td><a href={`/users/${user.id}`}>{user.name}</a></td>
 								<td>{user.blogs.length}</td>
 							</tr>
 						);
