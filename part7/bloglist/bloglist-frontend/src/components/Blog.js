@@ -5,13 +5,6 @@ const Blog = ({ blog, handleLikes, handleRemoving }) => {
 
   const [showfull,setShowFull] = useState(false)
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
 
   const showFullBlog = () => {
     return (
@@ -25,7 +18,7 @@ const Blog = ({ blog, handleLikes, handleRemoving }) => {
   }
 
   return (
-    <div style={blogStyle} className="blog">
+    <div  className="blog">
       <b>{blog.title}</b> <i>{blog.author}</i> <button onClick={() => setShowFull(!showfull)}>{showfull ? 'hide': 'view'}</button>
       {showfull && showFullBlog()}
     </div>

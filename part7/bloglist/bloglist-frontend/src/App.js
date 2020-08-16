@@ -10,23 +10,23 @@ import blogService from "./services/blogs";
 import userService from "./services/users";
 
 import { showNotifcation } from "./reducers/notificationReducer";
-import { setBlogs } from "./reducers/blogReducer";
+import { setBlogs , initializeBlogs} from "./reducers/blogReducer";
 import { setLoggedUser } from "./reducers/loggedUserReducer";
 import {addUsers} from './reducers/usersReducer'
 
 
 import { useDispatch, useSelector } from "react-redux";
 import { Switch, Route, useRouteMatch } from "react-router-dom";
+import CompleteBlog from "./components/CompleteBlog";
 
 const App = () => {
 	const dispatch = useDispatch();
 	const loggedInUser = useSelector((state) => state.loggedInUser);
 	const [users, setUsers] = useState([]);
-
 	const blogFormRef = useRef();
 
-	const match = useRouteMatch("/users/:id")
-	const user = match ? users.find(user => user.id === match.params.id) : null
+	const matchUser = useRouteMatch("/users/:id")
+	const user = matchUser ? users.find(user => user.id === matchUser.params.id) : null
 
 	useEffect(() => {
 		const loggedBlogUser = window.localStorage.getItem("loggedBlogUser");
@@ -44,6 +44,10 @@ const App = () => {
 			dispatch(addUsers(allUsers))
 			setUsers(allUsers);
 		})();
+	}, [dispatch]);
+
+	useEffect(() => {
+		dispatch(initializeBlogs());
 	}, [dispatch]);
 
 	const handleLogout = async () => {
@@ -98,6 +102,9 @@ const App = () => {
 						</Route>
 						<Route path="/users">
 							<Users users={users} />
+						</Route>
+						<Route path="/blogs/:id">
+							<CompleteBlog/>
 						</Route>
 						<Route path="/">
 							<div>
