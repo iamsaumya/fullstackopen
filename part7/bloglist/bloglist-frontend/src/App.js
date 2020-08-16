@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import Login from "./components/Login";
 import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
@@ -9,19 +9,28 @@ import Users from "./components/Users";
 import blogService from "./services/blogs";
 import { showNotifcation } from "./reducers/notificationReducer";
 import { setBlogs } from "./reducers/blogReducer";
-import { setUser } from "./reducers/userReducer";
+import { setLoggedUser } from "./reducers/loggedUserReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { Switch, Route } from "react-router-dom";
 
 const App = () => {
 	const dispatch = useDispatch();
-	const user = useSelector((state) => state.user);
+	const loggedInUser = useSelector((state) => state.loggedInUser);
 
 	const blogFormRef = useRef();
 
+	useEffect(() => {
+		const loggedBlogUser = window.localStorage.getItem("loggedBlogUser");
+		if (loggedBlogUser) {
+			const savedUser = JSON.parse(loggedBlogUser);
+			dispatch(setLoggedUser(savedUser));
+			blogService.setToken(savedUser.token);
+		}
+	}, [dispatch]);
+
 	const handleLogout = async () => {
 		window.localStorage.removeItem("loggedBlogUser");
-		dispatch(setUser(null));
+		dispatch(setLoggedUser(null));
 	};
 
 	const addBlogs = async (blogObject) => {
@@ -40,15 +49,6 @@ const App = () => {
 		}
 	};
 
-	useEffect(() => {
-		const loggedBlogUser = window.localStorage.getItem("loggedBlogUser");
-		if (loggedBlogUser) {
-			const user = JSON.parse(loggedBlogUser);
-			dispatch(setUser(user));
-			blogService.setToken(user.token);
-		}
-	}, []);
-
 	const createBlog = () => {
 		return (
 			<Togglable buttonLabel="Create Blog" ref={blogFormRef}>
@@ -60,7 +60,7 @@ const App = () => {
 	const logout = () => {
 		return (
 			<div>
-				<div>{user.name} logged in</div>
+				<div>{loggedInUser.name} logged in</div>
 				<button onClick={handleLogout}>Logout</button>
 			</div>
 		);
@@ -69,8 +69,8 @@ const App = () => {
 	return (
 		<div>
 			<Notification />
-			{user === null && <Login />}
-			{user !== null && (
+			{loggedInUser === null && <Login />}
+			{loggedInUser !== null && (
 				<div>
 					<h2>blogs</h2>
 					{logout()}

@@ -1,5 +1,5 @@
 
-const userReducer = (state = null,action) => {
+const loggedUserReducer = (state = null,action) => {
     switch(action.type){
         case 'ADD_USER': {
             return action.data.user
@@ -8,7 +8,7 @@ const userReducer = (state = null,action) => {
     }
 }
 
-export const setUser = (user) => {
+export const setLoggedUser = (user) => {
     return {
         type: 'ADD_USER',
         data: {
@@ -17,4 +17,4 @@ export const setUser = (user) => {
     }
 }
 
-export default userReducer
+export default loggedUserReducer
