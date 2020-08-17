@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { addLike, deleteBlog,makeComment } from '../reducers/blogReducer'
 import { showNotifcation } from '../reducers/notificationReducer'
-import {Form,Button} from 'react-bootstrap'
+import { Form,Button } from 'react-bootstrap'
 
 const CompleteBlog = () => {
   const dispatch = useDispatch()
@@ -34,7 +34,7 @@ const CompleteBlog = () => {
         await dispatch(deleteBlog(blog.id))
         window.location.href = '/'
       } catch (exception) {
-        dispatch(showNotifcation(exception.response.data.error, 5, "danger"))
+        dispatch(showNotifcation(exception.response.data.error, 5, 'danger'))
       }
     }
   }
@@ -62,7 +62,7 @@ const CompleteBlog = () => {
         <h3>comments</h3>
         <Form onSubmit={(e) => handleComment(e,blog.id)}>
           <Form.Group>
-          <Form.Control type="text" name="comment"/>
+            <Form.Control type="text" name="comment"/>
           </Form.Group>
           <Button type="submit">add comment</Button>
         </Form>

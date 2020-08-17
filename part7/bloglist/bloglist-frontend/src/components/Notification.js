@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux'
 import { Alert } from 'react-bootstrap'
 
 const Notification = () => {
-  const {variant,message} = useSelector(state => state.notification)
+  const { variant,message } = useSelector(state => state.notification)
 
   return (
     <React.Fragment>
-      {message !== null && 
+      {message !== null &&
       <Alert variant={variant}>
         {message}
       </Alert>

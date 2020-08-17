@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { setLoggedUser } from '../reducers/loggedUserReducer'
 import { showNotifcation } from '../reducers/notificationReducer'
 import blogService from '../services/blogs'
-import {Form, Button} from 'react-bootstrap'
+import { Form, Button } from 'react-bootstrap'
 
 const Login = () => {
 
@@ -18,10 +18,10 @@ const Login = () => {
       dispatch(setLoggedUser(user))
       window.localStorage.setItem('loggedBlogUser',JSON.stringify(user))
       blogService.setToken(user.token)
-      dispatch(showNotifcation("Successfully Logged In",5,"success"))
+      dispatch(showNotifcation('Successfully Logged In',5,'success'))
     }
     catch(exception){
-      dispatch(showNotifcation(exception.response.data.error,5,"danger"))
+      dispatch(showNotifcation(exception.response.data.error,5,'danger'))
     }
   }
 
@@ -30,16 +30,16 @@ const Login = () => {
       <h2>Log in to application</h2>
       <Form onSubmit={handleSubmit}>
         <Form.Group>
-            <Form.Control
-              placeholder="username"
-              id="username"
-              type="text"
-              value={username}
-              name="username"
-              onChange={({ target }) => setUsername(target.value)}/>
+          <Form.Control
+            placeholder="username"
+            id="username"
+            type="text"
+            value={username}
+            name="username"
+            onChange={({ target }) => setUsername(target.value)}/>
         </Form.Group>
         <Form.Group>
-            <Form.Control
+          <Form.Control
             placeholder="password"
             id="password"
             type="password"
