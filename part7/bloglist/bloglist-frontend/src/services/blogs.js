@@ -13,7 +13,7 @@ const getAll = async () => {
     return request.data
   }
   catch(e) {
-     throw new Error(e)
+    throw new Error(e)
   }
 }
 
@@ -48,7 +48,7 @@ const removeBlog = async blog => {
 }
 
 const makeComment = async (comment,id) => {
-  const response = await axios.post(`${baseUrl}/${id}/comments`,{comment})
+  const response = await axios.post(`${baseUrl}/${id}/comments`,{ comment })
   return response.data
 }
 
