@@ -1,18 +1,17 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { Alert } from 'react-bootstrap'
 
 const Notification = () => {
-  const message = useSelector(state => state.notification)
-
-  const style = {
-    border: 'solid',
-    padding: 10,
-    borderWidth: 1
-  }
+  const {variant,message} = useSelector(state => state.notification)
 
   return (
     <React.Fragment>
-      {message !== null && <div style={style}>{message}</div>}
+      {message !== null && 
+      <Alert variant={variant}>
+        {message}
+      </Alert>
+      }
     </React.Fragment>
   )
 }

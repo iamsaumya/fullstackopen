@@ -1,15 +1,15 @@
 let prevTimeID = 0
 
-const notificationReducer = (state = null,action) => {
+const notificationReducer = (state = {},action) => {
   switch(action.type){
   case 'SHOW_NOTIFICATION': {
-    return action.data.notification
+    return action.data
   }
   default: return state
   }
 }
 
-export const showNotifcation = (notification,time) => {
+export const showNotifcation = (message,time, variant) => {
   return async dispatch => {
     clearTimeout(prevTimeID)
     prevTimeID = setTimeout(() => dispatch({
@@ -22,7 +22,8 @@ export const showNotifcation = (notification,time) => {
     dispatch({
       type:'SHOW_NOTIFICATION',
       data: {
-        notification
+        message,
+        variant
       }
     })
   }

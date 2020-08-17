@@ -1,14 +1,16 @@
 import React from 'react'
+import { Table } from 'react-bootstrap'
+
 const Users = ({ users }) => {
   return (
     <div>
       <h2>Users</h2>
-      <table>
+      <Table striped>
         <thead>
           <tr>
             <th></th>
             <th>
-              <b>blogs created</b>
+              <b>Blogs created</b>
             </th>
           </tr>
         </thead>
@@ -22,7 +24,7 @@ const Users = ({ users }) => {
             )
           })}
         </tbody>
-      </table>
+      </Table>
     </div>
   )
 }

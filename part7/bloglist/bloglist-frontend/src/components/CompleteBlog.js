@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { addLike, deleteBlog,makeComment } from '../reducers/blogReducer'
 import { showNotifcation } from '../reducers/notificationReducer'
+import {Form,Button} from 'react-bootstrap'
 
 const CompleteBlog = () => {
   const dispatch = useDispatch()
@@ -33,7 +34,7 @@ const CompleteBlog = () => {
         await dispatch(deleteBlog(blog.id))
         window.location.href = '/'
       } catch (exception) {
-        dispatch(showNotifcation(exception.response.data.error, 5))
+        dispatch(showNotifcation(exception.response.data.error, 5, "danger"))
       }
     }
   }
@@ -50,25 +51,27 @@ const CompleteBlog = () => {
         <a href={blog.url}>{blog.url}</a>
         <p>
           {blog.likes}{' '}
-          <button
+          <Button
             className="like"
             onClick={() => handleLikes(blog.id, blog.likes)}
           >
 						like
-          </button>
+          </Button>
         </p>
         <p>{`added by ${blog.author}`}</p>
         <h3>comments</h3>
-        <form onSubmit={(e) => handleComment(e,blog.id)}>
-          <input type="text" name="comment"/>
-          <button type="submit">add comment</button>
-        </form>
+        <Form onSubmit={(e) => handleComment(e,blog.id)}>
+          <Form.Group>
+          <Form.Control type="text" name="comment"/>
+          </Form.Group>
+          <Button type="submit">add comment</Button>
+        </Form>
         <ul>
           {blog.comments.map((comment) => (
             <li key={comment}>{comment}</li>
           ))}
         </ul>
-        <button onClick={() => handleRemoving(blog)}>Remove</button>
+        <Button click={() => handleRemoving(blog)}>Remove</Button>
       </div>
     </div>
   )
