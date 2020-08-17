@@ -1,16 +1,25 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { addLike, deleteBlog } from "../reducers/blogReducer";
+import { addLike, deleteBlog,makeComment } from "../reducers/blogReducer";
 import { showNotifcation } from "../reducers/notificationReducer";
+
 const CompleteBlog = () => {
 	const dispatch = useDispatch();
 	const id = useParams().id;
+
 	const blogs = useSelector((state) => {
-		console.log(state);
 		return state.blogs;
 	});
+
 	const blog = blogs.find((blog) => blog.id === id);
+	
+	const handleComment = (e,id) => {
+		e.preventDefault()
+		const {comment} = e.target
+		dispatch(makeComment(comment.value,id))
+		e.target.reset()
+	}
 
 	const handleLikes = (id, likes) => {
 		dispatch(addLike(id, likes + 1));
@@ -50,6 +59,10 @@ const CompleteBlog = () => {
 				</p>
 				<p>{`added by ${blog.author}`}</p>
 				<h3>comments</h3>
+				<form onSubmit={(e) => handleComment(e,blog.id)}>
+					<input type="text" name="comment"/>
+					<button type="submit">add comment</button>
+				</form>
 				<ul>
 					{blog.comments.map((comment) => (
 						<li key={comment}>{comment}</li>
