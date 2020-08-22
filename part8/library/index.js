@@ -75,8 +75,13 @@ const typeDefs = gql`
     me: User
   }
 
+  type bookandauthor {
+    book: Book!
+    newAuthor: Author!
+  }
+
   type Subscription {
-    bookAdded: Book!
+    bookAdded: bookandauthor!
   }
 `
 
@@ -147,8 +152,12 @@ const resolvers = {
           invalidArgs: args
         })
       }
-
-      pubsub.publish('BOOK_ADDED', { bookAdded: book })
+      console.log({
+        bookAdded: { book, newAuthor }
+      })
+      pubsub.publish('BOOK_ADDED', {
+        bookAdded: { book, newAuthor }
+      })
       return book
     },
 

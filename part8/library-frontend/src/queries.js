@@ -94,3 +94,17 @@ export const ALL_BOOKS_WITH_GENRE = gql`
 
   ${BOOK_DETAILS}
 `
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      book {
+        ...BookDetails
+      }
+      newAuthor {
+        ...AuthorDetails
+      }
+    }
+  }
+  ${BOOK_DETAILS}
+  ${AUTHOR_DETAILS}
+`
