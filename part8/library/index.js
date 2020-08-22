@@ -75,13 +75,14 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    allBooks: (root, args) => {
+    allBooks: async (root, args) => {
       if (!args.author && !args.genre) {
-        return books
+        return Book.find({}).populate('author')
       }
 
+      let books = await Book.find({}).populate('author')
       if (args.author)
-        books = books.filter((book) => book.author === args.author)
+        books = books.filter((book) => book.author.name === args.author)
 
       if (args.genre) {
         books = books.filter(
@@ -93,10 +94,10 @@ const resolvers = {
 
     allAuthors: async () => {
       const authors = await Author.find({})
-      const books = await Book.find({})
+      const books = await Book.find({}).populate('author')
       return authors.map((author) => {
         const bookCount = books.reduce(
-          (a, book) => (book.author == author.name ? a + 1 : a),
+          (a, book) => (book.author.name == author.name ? a + 1 : a),
           0
         )
         return {
@@ -182,7 +183,6 @@ const resolvers = {
           invalidArgs: args,
         })
       }
-
       const user = await User.findOne({ username: args.username })
       if (!user || args.password !== 'easypassword') {
         throw new UserInputError('invalid credentials')
