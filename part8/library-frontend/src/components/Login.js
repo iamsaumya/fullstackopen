@@ -8,15 +8,15 @@ const Login = ({ setToken, show, setError, setPage }) => {
       setTimeout(() => {
         setError(null)
       }, 5000)
-    },
+    }
   })
   const loginSubmit = (e) => {
     e.preventDefault()
     login({
       variables: {
         username: e.target.username.value,
-        password: e.target.password.value,
-      },
+        password: e.target.password.value
+      }
     })
   }
 
@@ -27,7 +27,7 @@ const Login = ({ setToken, show, setError, setPage }) => {
       localStorage.setItem('library-user-token', token)
       setPage('authors')
     }
-  }, [result.data, setToken, setPage])
+  }, [result, setToken, setPage])
 
   if (!show) {
     return null
