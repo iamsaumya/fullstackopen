@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useMutation } from '@apollo/client'
-import { LOGIN } from './queries'
+import { LOGIN } from '../queries'
 const Login = ({ setToken, show, setError, setPage }) => {
   const [login, result] = useMutation(LOGIN, {
     onError: (error) => {

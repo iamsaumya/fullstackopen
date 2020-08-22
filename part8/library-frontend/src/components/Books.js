@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useQuery } from '@apollo/client'
-import { ALL_BOOKS } from './queries'
+import { ALL_BOOKS } from '../queries'
 
-const Books = (props) => {
+const Books = ({ show }) => {
   const [books, setBooks] = useState([])
   const [filteredBooks, setFilteredBooks] = useState([])
   const [genres, setGenres] = useState([])
@@ -36,14 +36,17 @@ const Books = (props) => {
     }
   }, [books, selectedGenre])
 
-  if (!props.show) {
+  if (!show) {
     return null
   }
 
   if (results.loading) {
-    return null
+    return <div>Loading...</div>
   }
 
+  if (!filteredBooks || filteredBooks.length === 0) {
+    return <div>No Books</div>
+  }
   return (
     <div>
       <h2>books</h2>

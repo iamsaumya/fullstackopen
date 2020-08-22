@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useLazyQuery, useQuery } from '@apollo/client'
-import { ME, ALL_BOOKS_WITH_GENRE } from './queries'
+import { ME, ALL_BOOKS_WITH_GENRE } from '../queries'
 
 const Recommended = ({ show }) => {
   const user = useQuery(ME)

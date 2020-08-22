@@ -5,7 +5,7 @@ import NewBook from './components/NewBook'
 import Login from './components/Login'
 import Recommended from './components/Recommended'
 import { useApolloClient, useQuery } from '@apollo/client'
-import { ME } from './components/queries'
+import { ME } from './queries'
 const App = () => {
   const [user, setUser] = useState(null)
   const [page, setPage] = useState('authors')

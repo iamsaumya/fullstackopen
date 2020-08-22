@@ -5,7 +5,7 @@ import {
   ALL_AUTHORS,
   ALL_BOOKS,
   ALL_BOOKS_WITH_GENRE
-} from './queries'
+} from '../queries'
 
 const NewBook = (props) => {
   const [createBook] = useMutation(ADD_BOOK, {
