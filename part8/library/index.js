@@ -152,9 +152,6 @@ const resolvers = {
           invalidArgs: args
         })
       }
-      console.log({
-        bookAdded: { book, newAuthor }
-      })
       pubsub.publish('BOOK_ADDED', {
         bookAdded: { book, newAuthor }
       })

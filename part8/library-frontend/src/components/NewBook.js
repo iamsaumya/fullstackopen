@@ -1,25 +1,31 @@
 import React, { useState } from 'react'
 import { useMutation } from '@apollo/client'
-import {
-  ADD_BOOK,
-  ALL_AUTHORS,
-  ALL_BOOKS,
-  ALL_BOOKS_WITH_GENRE
-} from '../queries'
+import { ADD_BOOK, ALL_BOOKS } from '../queries'
 
 const NewBook = (props) => {
   const [createBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [
-      { query: ALL_BOOKS },
-      { query: ALL_AUTHORS },
-      {
-        query: ALL_BOOKS_WITH_GENRE,
-        variables: { genre: props.user.favoriteGenre }
-      }
-    ],
     onError: (error) => {
       props.setError(error.graphQLErrors[0].message)
       setTimeout(() => props.setError(null), 5000)
+    },
+    update: (store, response) => {
+      console.log('inside update from newbook', response.data)
+      const includedIn = (set, object) =>
+        set.map((p) => p.id).includes(object.id)
+
+      const dataInStore = store.readQuery({ query: ALL_BOOKS })
+      console.log(dataInStore)
+      if (!includedIn(dataInStore.allBooks, response.data.addBook)) {
+        console.log('not found inside the cache')
+        store.writeQuery({
+          query: ALL_BOOKS,
+          data: {
+            allBooks: dataInStore.allBooks.concat(response.data.addBook)
+          }
+        })
+      } else {
+        console.log('found inside the cache')
+      }
     }
   })
   const [title, setTitle] = useState('')
