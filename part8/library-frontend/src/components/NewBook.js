@@ -1,49 +1,26 @@
 import React, { useState } from 'react'
-import { gql, useMutation } from '@apollo/client'
-
-const ADD_BOOK = gql`
-  mutation createBook(
-    $title: String!
-    $author: String!
-    $intPublished: Int!
-    $genres: [String!]!
-  ) {
-    addBook(
-      title: $title
-      author: $author
-      published: $intPublished
-      genres: $genres
-    ) {
-      title
-      author
-      published
-      genres
-    }
-  }
-`
-const ALL_AUTHORS = gql`
-  query {
-    allAuthors {
-      name
-      born
-      bookCount
-    }
-  }
-`
-
-const ALL_BOOKS = gql`
-  query {
-    allBooks {
-      title
-      published
-      author
-    }
-  }
-`
+import { useMutation } from '@apollo/client'
+import {
+  ADD_BOOK,
+  ALL_AUTHORS,
+  ALL_BOOKS,
+  ALL_BOOKS_WITH_GENRE
+} from './queries'
 
 const NewBook = (props) => {
   const [createBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    refetchQueries: [
+      { query: ALL_BOOKS },
+      { query: ALL_AUTHORS },
+      {
+        query: ALL_BOOKS_WITH_GENRE,
+        variables: { genre: props.user.favoriteGenre }
+      }
+    ],
+    onError: (error) => {
+      props.setError(error.graphQLErrors[0].message)
+      setTimeout(() => props.setError(null), 5000)
+    }
   })
   const [title, setTitle] = useState('')
   const [author, setAuhtor] = useState('')
@@ -58,7 +35,6 @@ const NewBook = (props) => {
   const submit = async (event) => {
     event.preventDefault()
 
-    console.log('add book...')
     const intPublished = parseInt(published)
     createBook({ variables: { title, author, intPublished, genres } })
     setTitle('')

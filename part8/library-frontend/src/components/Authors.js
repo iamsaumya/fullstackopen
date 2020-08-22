@@ -1,34 +1,25 @@
 import React from 'react'
-import { gql, useQuery, useMutation } from '@apollo/client'
-const ALL_AUTHORS = gql`
-  query {
-    allAuthors {
-      name
-      born
-      bookCount
-      id
-    }
-  }
-`
-const EDIT_AUTHOR = gql`
-  mutation updateAuthor($name: String!, $setBornTo: Int!) {
-    editAuthor(name: $name, setBornTo: $setBornTo) {
-      name
-      born
-      bookCount
-    }
-  }
-`
+import { useQuery, useMutation } from '@apollo/client'
+import { ALL_AUTHORS, EDIT_AUTHOR } from './queries'
+
 const Authors = (props) => {
   const results = useQuery(ALL_AUTHORS)
   const [updateAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
+    onError: (error) => {
+      props.setError(error.graphQLErrors[0].message)
+    },
   })
 
   const submit = (e) => {
     e.preventDefault()
     let name = e.target.name.value
     let setBornTo = parseInt(e.target.born.value)
+    if (isNaN(setBornTo)) {
+      props.setError('Enter the year')
+      setTimeout(() => props.setError(null), 5000)
+      return
+    }
     updateAuthor({ variables: { name, setBornTo } })
     e.target.reset()
   }
