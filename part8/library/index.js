@@ -3,6 +3,7 @@ const {
   gql,
   UserInputError,
   AuthenticationError,
+  PubSub
 } = require('apollo-server')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
@@ -24,6 +25,8 @@ mongoose
   .catch((error) => {
     console.log('connection failed', error.message)
   })
+
+const pubsub = new PubSub()
 
 const typeDefs = gql`
   type Book {
@@ -71,6 +74,10 @@ const typeDefs = gql`
     authorCount: Int!
     me: User
   }
+
+  type Subscription {
+    bookAdded: Book!
+  }
 `
 
 const resolvers = {
@@ -104,14 +111,14 @@ const resolvers = {
           name: author.name,
           id: author._id,
           born: author.born,
-          bookCount,
+          bookCount
         }
       })
     },
 
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
-    me: (root, args, { currentUser }) => currentUser,
+    me: (root, args, { currentUser }) => currentUser
   },
   Mutation: {
     addBook: async (root, args, { currentUser }) => {
@@ -126,18 +133,23 @@ const resolvers = {
           await newAuthor.save()
         } catch (error) {
           throw new UserInputError(error.message, {
-            invalidArgs: args,
+            invalidArgs: args
           })
         }
       }
       const newAuthor = await Author.findOne({ name: args.author })
       const book = new Book({ ...args, author: newAuthor })
 
-      return book.save().catch((error) => {
+      try {
+        await book.save()
+      } catch (error) {
         throw new UserInputError(error.message, {
-          invalidArgs: args,
+          invalidArgs: args
         })
-      })
+      }
+
+      pubsub.publish('BOOK_ADDED', { bookAdded: book })
+      return book
     },
 
     editAuthor: async (root, args, { currentUser }) => {
@@ -147,7 +159,7 @@ const resolvers = {
 
       if (!args.name) {
         throw new UserInputError('No name field', {
-          invalidArgs: args,
+          invalidArgs: args
         })
       }
       const author = await Author.findOne({ name: args.name })
@@ -157,30 +169,30 @@ const resolvers = {
       author.born = args.setBornTo
       return author.save().catch((error) => {
         throw new UserInputError(error.message, {
-          invalidArgs: args,
+          invalidArgs: args
         })
       })
     },
     createUser: async (root, args) => {
       if (!args.username || !args.favoriteGenre) {
         throw new UserInputError('username or favoriteGenre is missing', {
-          invalidArgs: args,
+          invalidArgs: args
         })
       }
       const user = new User({
         username: args.username,
-        favoriteGenre: args.favoriteGenre,
+        favoriteGenre: args.favoriteGenre
       })
       return user.save().catch((error) => {
         throw new UserInputError(error.message, {
-          invalidArgs: args,
+          invalidArgs: args
         })
       })
     },
     login: async (root, args) => {
       if (!args.username || !args.password) {
         throw new UserInputError('username or password is missing', {
-          invalidArgs: args,
+          invalidArgs: args
         })
       }
       const user = await User.findOne({ username: args.username })
@@ -190,12 +202,17 @@ const resolvers = {
 
       const userForToken = {
         username: user.username,
-        id: user._id,
+        id: user._id
       }
 
       return { value: jwt.sign(userForToken, JWT_SECRET) }
-    },
+    }
   },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+    }
+  }
 }
 
 const server = new ApolloServer({
@@ -208,9 +225,10 @@ const server = new ApolloServer({
       const currentUser = await User.findOne({ username: decodeToken.username })
       return { currentUser }
     }
-  },
+  }
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
   console.log(`Server ready at ${url}`)
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })
