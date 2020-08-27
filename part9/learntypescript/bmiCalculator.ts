@@ -1,37 +1,50 @@
-interface MultiplyValues {
+// interface MultiplyValues {
+//   weight: number;
+//   height: number;
+// }
+
+interface calculatedBMI {
   weight: number;
   height: number;
+  bmi: String;
 }
 
-let parseArguments = (args: Array<string>): MultiplyValues => {
-  if (args.length < 4) throw new Error('Not enough arguments');
-  if (args.length > 4) throw new Error('Too many arguments');
+// let parseArguments = (args: Array<string>): MultiplyValues => {
+//   if (args.length < 4) throw new Error('Not enough arguments');
+//   if (args.length > 4) throw new Error('Too many arguments');
 
-  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
-    return {
-      weight: Number(args[3]),
-      height: Number(args[2])
-    };
-  } else {
-    throw new Error('Provided values were not numbers!');
-  }
-};
+//   if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+//     return {
+//       weight: Number(args[3]),
+//       height: Number(args[2])
+//     };
+//   } else {
+//     throw new Error('Provided values were not numbers!');
+//   }
+// };
 
-const calculateBMI = (weight: number, height: number): String => {
+const calculateBMI = (weight: number, height: number): calculatedBMI => {
   height = height / 100;
   let bmi = weight / (height * height);
+  let status = '';
   if (bmi < 18.5) {
-    return 'Underweight';
+    status = 'Underweight';
   } else if (bmi < 24.9) {
-    return 'Normal (healthy weight)';
+    status = 'Normal (healthy weight)';
   } else if (bmi < 29.9) {
-    return 'Overweight';
+    status = 'Overweight';
   } else {
-    return 'Obese';
+    status = 'Obese';
   }
+  height = height * 100;
+  return {
+    height,
+    weight,
+    bmi: status
+  };
 };
 
-const { weight, height } = parseArguments(process.argv);
-console.log(calculateBMI(weight, height));
+// const { weight, height } = parseArguments(process.argv);
+// console.log(calculateBMI(weight, height));
 
-export {};
+export { calculateBMI };
