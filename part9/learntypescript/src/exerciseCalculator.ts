@@ -1,11 +1,11 @@
-import { isArray, isString, isNumber } from 'util';
+import { isNumber } from 'util';
 
 interface Result {
   periodLength: number;
   trainingDays: number;
   success: boolean;
   rating: number;
-  ratingDescription: String;
+  ratingDescription: string;
   target: number;
   average: number;
 }
