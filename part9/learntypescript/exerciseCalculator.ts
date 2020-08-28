@@ -1,5 +1,3 @@
-import { isNumber } from 'util';
-
 interface Result {
   periodLength: number;
   trainingDays: number;
@@ -9,22 +7,6 @@ interface Result {
   target: number;
   average: number;
 }
-
-interface Input {
-  exerciselog: number[];
-  target: number;
-}
-const parseArguments = (args: Array<string>): Input => {
-  if (args.length < 2) throw new Error('Not enough arguments');
-  if (args.every((ar) => !isNumber(ar))) {
-    return {
-      exerciselog: args.map((ar) => Number(ar)).slice(3),
-      target: Number(args[2])
-    };
-  } else {
-    throw new Error('Provided values were not numbers!');
-  }
-};
 
 const calculateExercise = (exerciselog: number[], target: number): Result => {
   const periodLength = exerciselog.length;
@@ -58,5 +40,4 @@ const calculateExercise = (exerciselog: number[], target: number): Result => {
   };
 };
 
-const { exerciselog, target } = parseArguments(process.argv);
-console.log(calculateExercise(exerciselog, target));
+export { calculateExercise };
