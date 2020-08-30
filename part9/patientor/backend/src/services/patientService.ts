@@ -14,6 +14,9 @@ const getPatients = (): patientsWithoutSSN[] => {
   });
 };
 
+const getPatientByID = (id: string): patientsWithoutSSN | undefined => {
+  return patients.find((patient) => patient.id === id);
+};
 const postPatients = (newPatient: newPatientEntry): PatientEntry => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const id = uuid();
@@ -27,5 +30,6 @@ const postPatients = (newPatient: newPatientEntry): PatientEntry => {
 
 export default {
   getPatients,
-  postPatients
+  postPatients,
+  getPatientByID
 };
