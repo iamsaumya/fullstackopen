@@ -5,9 +5,12 @@ import { Patient, Entry, Diagnosis } from '../types';
 import { apiBaseUrl } from '../constants';
 import { useStateValue } from '../state';
 import { useParams } from 'react-router-dom';
-import { setFetchedPatient } from '../state';
+import { setFetchedPatient, setDiagnosisList } from '../state';
 const PatientPage: React.FC = () => {
-  const [{ confidentialPatientDetails }, dispatch] = useStateValue();
+  const [
+    { confidentialPatientDetails, diagnosisList },
+    dispatch
+  ] = useStateValue();
   const { id } = useParams<{ id: string }>();
   const [patient, setPatient] = React.useState<Patient | undefined>();
   React.useEffect(() => {
@@ -23,18 +26,32 @@ const PatientPage: React.FC = () => {
       }
     }
 
+    async function fetchDiagnosisList() {
+      try {
+        const { data: diagnosisList } = await axios.get<Diagnosis[]>(
+          `${apiBaseUrl}/diagnoses`
+        );
+        dispatch(setDiagnosisList(diagnosisList));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     if (confidentialPatientDetails[id]) {
       setPatient(confidentialPatientDetails[id]);
     } else {
       getPatient();
     }
-  }, [dispatch, id, confidentialPatientDetails]);
 
-  if (!patient) return <div>Loading...</div>;
+    if (Object.values(diagnosisList).length === 0) {
+      fetchDiagnosisList();
+    }
+  }, [dispatch, id, confidentialPatientDetails, diagnosisList]);
+
+  if (!patient || !diagnosisList) return <div>Loading...</div>;
 
   return (
     <div>
-      {console.log(patient)}
       <h1>{patient.name}</h1>
       <div>
         <b>SSN:</b> {patient.ssn}
@@ -55,7 +72,11 @@ const PatientPage: React.FC = () => {
                   {entry.diagnosisCodes &&
                     entry.diagnosisCodes.map(
                       (diagonsisCode: Diagnosis['code']) => (
-                        <li key={diagonsisCode}>{diagonsisCode}</li>
+                        <li key={diagonsisCode}>
+                          {diagonsisCode}{' '}
+                          {diagnosisList[diagonsisCode] &&
+                            diagnosisList[diagonsisCode].name}
+                        </li>
                       )
                     )}
                 </ul>
