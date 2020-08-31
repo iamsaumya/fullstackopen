@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-import { Patient } from '../types';
+import { Patient, Entry, Diagnosis } from '../types';
 import { apiBaseUrl } from '../constants';
 import { useStateValue } from '../state';
 import { useParams } from 'react-router-dom';
@@ -34,6 +34,7 @@ const PatientPage: React.FC = () => {
 
   return (
     <div>
+      {console.log(patient)}
       <h1>{patient.name}</h1>
       <div>
         <b>SSN:</b> {patient.ssn}
@@ -41,6 +42,28 @@ const PatientPage: React.FC = () => {
       <div>
         <b>Occupation:</b> {patient.occupation}
       </div>
+      {patient.entries.length > 0 && (
+        <div>
+          <h2>Entries</h2>
+          {patient.entries.map((entry: Entry) => {
+            return (
+              <div key={entry.id}>
+                <p>
+                  {entry.date} {entry.description}
+                </p>
+                <ul>
+                  {entry.diagnosisCodes &&
+                    entry.diagnosisCodes.map(
+                      (diagonsisCode: Diagnosis['code']) => (
+                        <li key={diagonsisCode}>{diagonsisCode}</li>
+                      )
+                    )}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
