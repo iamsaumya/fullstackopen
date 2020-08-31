@@ -14,7 +14,7 @@ const getPatients = (): patientsWithoutSSN[] => {
   });
 };
 
-const getPatientByID = (id: string): patientsWithoutSSN | undefined => {
+const getPatientByID = (id: string): PatientEntry | undefined => {
   return patients.find((patient) => patient.id === id);
 };
 const postPatients = (newPatient: newPatientEntry): PatientEntry => {
