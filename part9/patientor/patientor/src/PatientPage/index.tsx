@@ -6,6 +6,8 @@ import { apiBaseUrl } from '../constants';
 import { useStateValue } from '../state';
 import { useParams } from 'react-router-dom';
 import { setFetchedPatient, setDiagnosisList } from '../state';
+import EntryDetails from '../components/EntryDetails';
+
 const PatientPage: React.FC = () => {
   const [
     { confidentialPatientDetails, diagnosisList },
@@ -64,22 +66,17 @@ const PatientPage: React.FC = () => {
           <h2>Entries</h2>
           {patient.entries.map((entry: Entry) => {
             return (
-              <div key={entry.id}>
-                <p>
-                  {entry.date} {entry.description}
-                </p>
-                <ul>
-                  {entry.diagnosisCodes &&
-                    entry.diagnosisCodes.map(
-                      (diagonsisCode: Diagnosis['code']) => (
-                        <li key={diagonsisCode}>
-                          {diagonsisCode}{' '}
-                          {diagnosisList[diagonsisCode] &&
-                            diagnosisList[diagonsisCode].name}
-                        </li>
-                      )
-                    )}
-                </ul>
+              <div
+                style={{
+                  border: 'solid 2px',
+                  marginTop: 10,
+                  marginBottom: 10,
+                  padding: 5,
+                  boxShadow: '3px 5px grey'
+                }}
+                key={entry.id}
+              >
+                <EntryDetails entry={entry} />
               </div>
             );
           })}
