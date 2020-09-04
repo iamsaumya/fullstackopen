@@ -8,7 +8,8 @@ import {
   OccupationalHealthcareEntry,
   HealthCheckEntry,
   BaseEntry,
-  DiagnosesEntry
+  DiagnosesEntry,
+  newEntry
 } from './types';
 
 const isString = (text: any): text is string => {
@@ -45,6 +46,25 @@ const isBaseEntry = (entry: any): entry is BaseEntry => {
     !isString(entry.specialist)
   ) {
     throw new Error('Incorrect id, description, date or specialist');
+  }
+
+  return entry;
+};
+
+const isNewBaseEntry = (entry: any): entry is BaseEntry => {
+  if (entry.diagnosisCodes) {
+    if (!parseDiagnosis(entry.diagnosisCodes)) {
+      throw new Error(`Incorrect Diagnosis Code ${entry.diagnosis}`);
+    }
+  }
+
+  if (
+    !entry ||
+    !isString(entry.description) ||
+    !isDate(entry.date) ||
+    !isString(entry.specialist)
+  ) {
+    throw new Error('Incorrect description, date or specialist');
   }
 
   return entry;
@@ -137,6 +157,7 @@ const parseEntry = (entries: any): Entry[] => {
     }
   });
 };
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const toNewPatientEntry = (object: any): newPatientEntry => {
   return {
@@ -149,4 +170,19 @@ const toNewPatientEntry = (object: any): newPatientEntry => {
   };
 };
 
-export default toNewPatientEntry;
+const toNewEntry = (object: any): newEntry => {
+  if (!isNewBaseEntry(object)) {
+    throw new Error(`Not base entry ${object}`);
+  }
+  if (isHospitalEntry(object)) {
+    return object;
+  } else if (isOccupationalHealthcareEntry(object)) {
+    return object;
+  } else if (isHealthCheckEntry(object)) {
+    return object;
+  } else {
+    throw new Error(`Not an entry from the above types.`);
+  }
+};
+
+export default { toNewPatientEntry, toNewEntry };
