@@ -23,7 +23,7 @@ Other topics include debugging applications, configuration, managing runtime env
 | 8         | 26/26       |
 | 9         | 27/27       |
 | 10        | /27         |
-| **Total** | **207/234** |
+| **Total** | **201/228** |
 
 ### [Certificate](https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/fadeb0d609282f4fd36570c70db8e945 'Certificate')
 
