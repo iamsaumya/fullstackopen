@@ -21,8 +21,9 @@ Other topics include debugging applications, configuration, managing runtime env
 | 6         | 21/21       |
 | 7         | 21/21       |
 | 8         | 26/26       |
-| 9         | /27         |
-| **Total** | **174/207** |
+| 9         | 27/27       |
+| 10        | /27         |
+| **Total** | **207/234** |
 
 ### [Certificate](https://studies.cs.helsinki.fi/stats/api/certificate/fullstackopen/en/fadeb0d609282f4fd36570c70db8e945 'Certificate')
 
@@ -99,3 +100,10 @@ Other topics include debugging applications, configuration, managing runtime env
 - First Steps with Typescript
 - Typing express app
 - React with types
+
+### Part 10: React Native
+
+- Introduction to React Native
+- React Native basics
+- Communicating with server
+- Testing and extending our application
