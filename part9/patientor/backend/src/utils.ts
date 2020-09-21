@@ -70,11 +70,16 @@ const isNewBaseEntry = (entry: any): entry is BaseEntry => {
   return entry;
 };
 const isHospitalEntry = (entry: any): entry is HospitalEntry => {
-  if (entry.discharge) {
-    return (
-      Object.keys(entry.discharge).includes('date') &&
-      Object.keys(entry.discharge).includes('criteria')
-    );
+  if (
+    entry.discharge &&
+    Object.keys(entry.discharge).includes('date') &&
+    Object.keys(entry.discharge).includes('criteria')
+  ) {
+    if (!isString(entry.discharge.criteria) || !isDate(entry.discharge.date)) {
+      throw new Error('Incorrect discharge information');
+    } else {
+      return true;
+    }
   }
   return false;
 };
@@ -84,10 +89,17 @@ const isOccupationalHealthcareEntry = (
 ): entry is OccupationalHealthcareEntry => {
   if (entry.employerName) {
     if (entry.sickLeave) {
-      return (
+      if (
         Object.keys(entry.sickLeave).includes('startDate') &&
         Object.keys(entry.sickLeave).includes('endDate')
-      );
+      ) {
+        if (
+          !isDate(entry.sickLeave.startDate) ||
+          !isDate(entry.sickLeave.endDate)
+        ) {
+          throw new Error('Incorrect Date for Sick Leave');
+        } else return true;
+      }
     }
     return true;
   }
@@ -175,11 +187,11 @@ const toNewEntry = (object: any): newEntry => {
     throw new Error(`Not base entry ${object}`);
   }
   if (isHospitalEntry(object)) {
-    return object;
+    return { ...object, type: 'Hospital' };
   } else if (isOccupationalHealthcareEntry(object)) {
-    return object;
+    return { ...object, type: 'OccupationalHealthcare' };
   } else if (isHealthCheckEntry(object)) {
-    return object;
+    return { ...object, type: 'HealthCheck' };
   } else {
     throw new Error(`Not an entry from the above types.`);
   }

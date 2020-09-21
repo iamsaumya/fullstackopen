@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Entry,
-  HealthCheckRating,
   HospitalEntry,
   OccupationalHealthcareEntry,
   HealthCheckEntry
@@ -24,6 +23,21 @@ const Hospital: React.FC<{ entry: HospitalEntry }> = ({ entry }) => {
       <p>
         <i>{entry.description}</i>
       </p>
+      <p>
+        <i>{entry.specialist}</i>
+      </p>
+      <h4>Discharge</h4>
+      <p>Date: {entry.discharge?.date}</p>
+      <p>Criteria: {entry.discharge?.criteria}</p>
+      {entry.diagnosisCodes && (
+        <div>
+          <h4>Diagnosis Codes</h4>
+          <ul>
+            {entry.diagnosisCodes &&
+              entry.diagnosisCodes.map((code) => <li key={code}>{code}</li>)}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
@@ -39,6 +53,28 @@ const OccupationalHealthcare: React.FC<{
       <p>
         <i>{entry.description}</i>
       </p>
+      <p>
+        <i>{entry.specialist}</i>
+      </p>
+      <h4>Employer Name</h4>
+      <p>{entry.employerName}</p>
+      {entry.sickLeave && (
+        <div>
+          <h4>Sick Leave</h4>
+          <p>
+            {entry.sickLeave?.startDate} - {entry.sickLeave?.endDate}
+          </p>
+        </div>
+      )}
+      {entry.diagnosisCodes && (
+        <div>
+          <h4>Diagnosis Codes</h4>
+          <ul>
+            {entry.diagnosisCodes &&
+              entry.diagnosisCodes.map((code) => <li key={code}>{code}</li>)}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
@@ -52,6 +88,18 @@ const HealthCheck: React.FC<{ entry: HealthCheckEntry }> = ({ entry }) => {
       <p>
         <i>{entry.description}</i>
       </p>
+      <p>
+        <i>{entry.specialist}</i>
+      </p>
+      {entry.diagnosisCodes && (
+        <div>
+          <h4>Diagnosis Codes</h4>
+          <ul>
+            {entry.diagnosisCodes &&
+              entry.diagnosisCodes.map((code) => <li key={code}>{code}</li>)}
+          </ul>
+        </div>
+      )}
       {entry.healthCheckRating === 0 && (
         <Icon name="heart" color="green" size="large" />
       )}
