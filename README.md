@@ -1,5 +1,7 @@
 # [Full Stack Open 2020](https://fullstackopen.com/en/ 'Full Stack Open 2020 Homepage')
 
+![screenshot-studies-cs-helsinki-fi-stats-api-certificate-fullstackopen-en-fa-1616941172034](https://user-images.githubusercontent.com/40148448/112755571-d0a6f580-8ffe-11eb-87eb-c3ddfbeff9d1.png)
+
 Learn React, Redux, Node.js, MongoDB, GraphQL and TypeScript in one go! This course will introduce you to modern JavaScript-based web development. The main focus is on building single page applications with ReactJS that use REST APIs built with Node.js.
 
 ## General
